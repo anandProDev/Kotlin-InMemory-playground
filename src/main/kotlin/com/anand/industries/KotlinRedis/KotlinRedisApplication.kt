@@ -1,6 +1,5 @@
 package com.anand.industries.KotlinRedis
 
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
@@ -10,12 +9,19 @@ import org.springframework.data.redis.core.RedisTemplate
 
 @SpringBootApplication
 @Configuration
+
 class KotlinRedisApplication {
 
+	companion object {
+		@JvmStatic
+		fun main(args: Array<String>) {
+			runApplication<KotlinRedisApplication>(*args)
+		}
+	}
 
 	@Bean
 	fun jedisConnectionFactory(): JedisConnectionFactory {
-		return JedisConnectionFactory().apply { hostName = "127.0.0.1"
+		return JedisConnectionFactory().apply { hostName = "redis"
 			port = 6379
 			timeout = 30000
 			usePool = true}
@@ -32,4 +38,5 @@ class KotlinRedisApplication {
 fun main(args: Array<String>) {
 	runApplication<KotlinRedisApplication>(*args)
 }
+
 
