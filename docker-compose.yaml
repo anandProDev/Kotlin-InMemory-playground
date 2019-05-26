@@ -1,0 +1,24 @@
+version: '3'
+services:
+
+  kotlinredis:
+    build: /Users/ael01/myWorkspace/Kotlin-Redis
+#    volumes:
+#      - ./Users/ael01/myWorkspace/Kotlin-Redis/build/dependency/BOOT-INF/lib:/app/lib
+#      - ./build/META-INF:/app/META-INF
+#      - ./build/BOOT-INF/classes:/app
+#      - ./kotlinredis:/com/anand/industries/KotlinRedis
+##    command: ["java","-cp","app:app/lib/*","/Users/ael01/myWorkspace/Kotlin-Redis/src/main/kotlin/com/anand/industries/KotlinRedis/KotlinRedisApplication"]
+    ports:
+      - 8080:8080
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:4.0.5-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    hostname: redis
+    ports:
+      - 6379:6379
+
+

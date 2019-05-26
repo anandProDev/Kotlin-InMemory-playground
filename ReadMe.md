@@ -4,7 +4,7 @@ A simple kotlin app to play with in-memory databases
 
 - [x] A simple rest controller 
 - [x] Talk with Redis-DB and return a json [x]
-- [ ] Create a docker file
+- [x] Create a docker file
 - [ ] Create a docker compose file
 -----------
 - [ ] Kafka
