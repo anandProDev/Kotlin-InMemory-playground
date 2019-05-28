@@ -1,20 +1,21 @@
 package com.anand.industries.KotlinRedis
 
 import com.anand.industries.KotlinRedis.data.Student
-import com.fasterxml.jackson.databind.JsonDeserializer
-import com.fasterxml.jackson.databind.ser.std.JsonValueSerializer
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.ser.std.StringSerializer
+import mu.KLogging
 import org.apache.kafka.clients.consumer.ConsumerConfig
-import org.apache.kafka.clients.consumer.ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG
 import org.apache.kafka.clients.producer.ProducerConfig
+import org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG
+import org.apache.kafka.clients.producer.ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG
+import org.apache.kafka.common.serialization.Deserializer
+import org.apache.kafka.common.serialization.Serializer
+import org.apache.kafka.common.serialization.StringDeserializer
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.apache.kafka.clients.producer.ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG
-import org.apache.kafka.clients.producer.ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG
-import org.apache.kafka.common.serialization.StringDeserializer
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory
 import org.springframework.data.redis.core.RedisTemplate
@@ -25,8 +26,8 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory
 import org.springframework.kafka.core.DefaultKafkaProducerFactory
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.kafka.core.ProducerFactory
-import org.springframework.kafka.support.converter.StringJsonMessageConverter
 import org.springframework.kafka.support.serializer.JsonSerializer
+import org.testcontainers.shaded.org.bouncycastle.asn1.x500.style.RFC4519Style.o
 import java.io.Serializable
 import org.springframework.data.redis.connection.jedis.JedisClientConfiguration as JedisClientConfiguration1
 
@@ -65,7 +66,6 @@ fun main(args: Array<String>) {
     runApplication<KotlinRedisApplication>(*args)
 }
 
-
 @Configuration
 class SenderConfig {
 
@@ -76,8 +76,9 @@ class SenderConfig {
     fun producerConfigs(): Map<String, Serializable?> {
         return mapOf(
             ProducerConfig.BOOTSTRAP_SERVERS_CONFIG to bootstrapServers,
-            KEY_SERIALIZER_CLASS_CONFIG to StringSerializer::class.java,
-            VALUE_SERIALIZER_CLASS_CONFIG to JsonSerializer::class.java)
+            KEY_SERIALIZER_CLASS_CONFIG to JsonSerializer::class.java,
+            VALUE_SERIALIZER_CLASS_CONFIG to StudentJsonSerializer::class.java
+        )
     }
 
     @Bean
@@ -99,18 +100,13 @@ class ConsumerConfig {
     private val bootstrapServers: String? = "BOOTSTRAP URL NOT CONFIGURED"
 
     fun consumerFactory(groupId: String): ConsumerFactory<String, Student> {
-        val props = mapOf(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to bootstrapServers,
-            ConsumerConfig.GROUP_ID_CONFIG to StringSerializer::class.java
-            //ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to org.springframework.kafka.support.serializer.JsonDeserializer::class.java,
-            //ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to org.springframework.kafka.support.serializer.JsonDeserializer::class.java
+        val props = mapOf(
+            ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG to bootstrapServers,
+            ConsumerConfig.GROUP_ID_CONFIG to StringSerializer::class.java,
+            ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG to StringDeserializer::class.java,
+            ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG to StudentJsonDeserializer::class.java
         )
-//        return DefaultKafkaConsumerFactory(props)
-
-        return DefaultKafkaConsumerFactory<String, Student>(
-            props,
-            StringDeserializer(),
-            org.springframework.kafka.support.serializer.JsonDeserializer<Student>(Student::class.java)
-        )
+        return DefaultKafkaConsumerFactory(props)
     }
 
     @Bean
@@ -118,8 +114,51 @@ class ConsumerConfig {
 
         val factory = ConcurrentKafkaListenerContainerFactory<String, Student>()
         factory.consumerFactory = consumerFactory("spring")
-        factory.setMessageConverter(StringJsonMessageConverter())
         return factory
     }
+}
+
+@Bean
+fun studentJsonDeserializer() = StudentJsonDeserializer()
+
+@Bean
+fun studentJsonSerializer() = StudentJsonSerializer()
+
+@Bean
+fun objectMapper() = ObjectMapper()
+
+class StudentJsonDeserializer : Deserializer<Student> {
+
+    override fun deserialize(topic: String, data: ByteArray): Student? {
+        var student: Student? = null
+        try {
+            student = objectMapper().readValue(data, Student::class.java)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return student
+    }
+
+    override fun configure(configs: MutableMap<String, *>, isKey: Boolean) {}
+
+    override fun close() {}
+}
+
+class StudentJsonSerializer : Serializer<Student> {
+
+    companion object : KLogging()
+
+    override fun serialize(s: String, student: Student): ByteArray? {
+        try {
+            return objectMapper().writeValueAsBytes(o)
+        } catch (e: Exception) {
+            logger.warn { "Could not serialize Student $student" }
+        }
+        return null
+    }
+
+    override fun configure(configs: MutableMap<String, *>, isKey: Boolean) {}
+
+    override fun close() {}
 }
 
