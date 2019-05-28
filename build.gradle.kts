@@ -18,14 +18,17 @@ repositories {
 }
 
 dependencies {
+	implementation("io.github.microutils:kotlin-logging:1.6.26")
+
 	implementation("org.springframework.boot:spring-boot-starter")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
-	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("redis.clients:jedis:2.9.0")
 	implementation("org.springframework.data:spring-data-redis:2.0.3.RELEASE")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.datastax.cassandra:cassandra-driver-core:4.0.0")
+	implementation("org.springframework.kafka:spring-kafka:2.2.6.RELEASE")
+
 
 	implementation("org.testcontainers:testcontainers:1.11.3")
 	implementation("io.mockk:mockk:1.9.3")

@@ -1,18 +1,36 @@
 version: '3'
 services:
 
-  kotlinredis:
-    build: /Users/ael01/myWorkspace/Kotlin-Redis
-#    volumes:
-#      - ./Users/ael01/myWorkspace/Kotlin-Redis/build/dependency/BOOT-INF/lib:/app/lib
-#      - ./build/META-INF:/app/META-INF
-#      - ./build/BOOT-INF/classes:/app
-#      - ./kotlinredis:/com/anand/industries/KotlinRedis
-##    command: ["java","-cp","app:app/lib/*","/Users/ael01/myWorkspace/Kotlin-Redis/src/main/kotlin/com/anand/industries/KotlinRedis/KotlinRedisApplication"]
+  zookeeper:
+    image: wurstmeister/zookeeper
+    restart: always
     ports:
-      - 8080:8080
+      - "2181:2181"
+
+  kafka:
+    image: wurstmeister/kafka
+    restart: always
+    ports:
+      - "9092:9092"
+    environment:
+      HOSTNAME: "localhost"
+      KAFKA_ADVERTISED_HOST_NAME: "localhost"
+      KAFKA_ADVERTISED_PORT: 9092
+      KAFKA_AUTO_CREATE_TOPICS: "true"
+      KAFKA_CREATE_TOPICS: "my-greetings-spring"
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
-      - redis
+      - zookeeper
+
+#  kotlinredis:
+#    build: .
+#    ports:
+#      - 8080:8080
+#    depends_on:
+#      - redis
+#      - kafka
 
   redis:
     image: redis:4.0.5-alpine
