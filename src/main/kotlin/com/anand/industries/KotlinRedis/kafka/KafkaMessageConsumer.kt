@@ -11,15 +11,13 @@ import org.springframework.stereotype.Component
 class KafkaMessageConsumer(private val studentRepository : StudentRepository) {
 
     companion object : KLogging()
-    @KafkaListener(topics = ["my-greetings-spring"], groupId = "test-consumer-group")
-    fun listen(@Payload student: Student) : Student {
+    @KafkaListener(topics = ["student-saver-topic"], groupId = "student-consumer-group")
+    fun listen(@Payload student: Student) {
 
         logger.info { "Received message $student" }
 
         studentRepository.save(student)
 
-        logger.info { "Stored message successfully $student" }
-
-        return student
+        logger.info { "Saved message successfully $student" }
     }
 }

@@ -15,7 +15,7 @@ class KafkaMessageProducer(val kafkaTemplate: KafkaTemplate<String, Student>) {
 
     @PostMapping("/kafka/send")
     fun send(@RequestParam("greeting") student: Student) {
-        kafkaTemplate.send("my-greetings-spring", student)
-        logger.info { "Message sent successfully to topic my-greetings-spring" }
+        kafkaTemplate.send("student-saver-topic", student)
+        logger.info { "Message sent successfully to topic student-saver-topic" }
     }
 }

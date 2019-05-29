@@ -17,7 +17,7 @@ services:
       KAFKA_ADVERTISED_HOST_NAME: "localhost"
       KAFKA_ADVERTISED_PORT: 9092
       KAFKA_AUTO_CREATE_TOPICS: "true"
-      KAFKA_CREATE_TOPICS: "my-greetings-spring"
+      KAFKA_CREATE_TOPICS: "student-saver-topic"
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock

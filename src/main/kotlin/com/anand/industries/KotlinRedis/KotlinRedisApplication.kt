@@ -27,7 +27,6 @@ import org.springframework.kafka.core.DefaultKafkaProducerFactory
 import org.springframework.kafka.core.KafkaTemplate
 import org.springframework.kafka.core.ProducerFactory
 import org.springframework.kafka.support.serializer.JsonSerializer
-import org.testcontainers.shaded.org.bouncycastle.asn1.x500.style.RFC4519Style.o
 import java.io.Serializable
 import org.springframework.data.redis.connection.jedis.JedisClientConfiguration as JedisClientConfiguration1
 
@@ -150,7 +149,7 @@ class StudentJsonSerializer : Serializer<Student> {
 
     override fun serialize(s: String, student: Student): ByteArray? {
         try {
-            return objectMapper().writeValueAsBytes(o)
+            return objectMapper().writeValueAsBytes(student)
         } catch (e: Exception) {
             logger.warn { "Could not serialize Student $student" }
         }
