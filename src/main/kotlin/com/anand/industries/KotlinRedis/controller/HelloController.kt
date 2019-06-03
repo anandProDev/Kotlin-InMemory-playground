@@ -15,16 +15,30 @@ import java.util.concurrent.atomic.AtomicInteger
 
 @RestController
 class HelloController(private val studentRepository: StudentRepository,
-                      private val kafkaMessageConsumer: KafkaMessageConsumer,
                       private val kafkaMesageProducer: KafkaMessageProducer) {
 
     companion object : KLogging()
 
     private val counter = AtomicInteger(0)
 
-    @RequestMapping("/hello/{name}")
-    fun answer(@PathVariable("name") name: String) : Student {
 
+    @RequestMapping("/hello/onlydb/{name}")
+    fun getUserWithOnlyDbInteraction(@PathVariable("name") name: String) : Student {
+        logger.info { "Received request for name $name" }
+        val id = counter.incrementAndGet()
+        val student = Student(id = id, name = name)
+
+        studentRepository.save(student)
+
+        val redisStudent = studentRepository.findById(id).get()
+
+        logger.info { "Student fetched from db $redisStudent" }
+
+        return redisStudent
+    }
+
+    @RequestMapping("/hello/{name}")
+    fun getUser(@PathVariable("name") name: String) : Student {
         logger.info { "Received request for name $name" }
         val id = counter.incrementAndGet()
         val student = Student(id = id, name = name)

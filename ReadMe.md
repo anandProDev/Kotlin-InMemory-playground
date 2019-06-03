@@ -28,6 +28,8 @@ A simple kotlin app to play with in-memory databases
  
  ``` ./gradlew docker build ```
  
+ ``` docker build -t anandindustries/kotlinredis:latest . ```
+ 
  ##### To run the image as a stand-alone
  
   ```docker run -p 8080:8080 -t com.anand.industries/kotlinredis```

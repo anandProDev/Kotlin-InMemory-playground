@@ -28,7 +28,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.datastax.cassandra:cassandra-driver-core:4.0.0")
 	implementation("org.springframework.kafka:spring-kafka:2.2.6.RELEASE")
-
+	implementation("io.micrometer:micrometer-registry-prometheus:1.1.4")
 
 	implementation("org.testcontainers:testcontainers:1.11.3")
 	implementation("io.mockk:mockk:1.9.3")
