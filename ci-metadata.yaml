@@ -1,0 +1,28 @@
+
+---
+repoDescription: "Kotlin - redis - kafka"
+repoOwner: "one team"
+defaults:
+  builds:
+    driverName: "build-docker"
+    driverOpts:
+      buildRoot: "./"
+      dockerfileLocation: "./Dockerfile"
+  publish:
+    driverName: "sbg-artifactory"
+    driverOpts:
+      authentication:
+        artifactory:
+          method: "docker"
+          provider: "jenkins-username-password"
+          details:
+            credentialsId: "artifactory-jenkins-apikey"
+  notifications:
+    driverName: "sbg-slack"
+    driverOpts:
+      slackChannel: "#gstp-sre-bots"
+projects:
+  kotlin-redis-kafka:
+    builds:
+      driverOpts:
+        imageName: "anand/kotlin-redis-kafka"

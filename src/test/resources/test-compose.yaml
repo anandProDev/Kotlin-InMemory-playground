@@ -1,43 +1,43 @@
-version: '3'
-services:
-
-  zookeeper:
-    image: wurstmeister/zookeeper
-    restart: always
-    ports:
-      - "2181:2181"
-
-  kafka:
-    image: wurstmeister/kafka
-    restart: always
-    ports:
-      - "9092:9092"
-    environment:
-      HOSTNAME: kafka
-      KAFKA_ADVERTISED_HOST_NAME: "kafka"
-      KAFKA_ADVERTISED_PORT: 9092
-      KAFKA_AUTO_CREATE_TOPICS: "true"
-      KAFKA_CREATE_TOPICS: "student-saver-topic"
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    depends_on:
-      - zookeeper
-
-  kotlinredis:
-    build: .
-    hostname: anandindustries
-    ports:
-      - 8080:8080
-    depends_on:
-      - redis
-      - kafka
-
-  redis:
-    image: redis:4.0.5-alpine
-    command: ["redis-server", "--appendonly", "yes"]
-    hostname: redis
-    ports:
-      - 6379:6379
-
-
+#version: '2'
+#services:
+#
+##  zookeeper:
+##    image: wurstmeister/zookeeper
+##    restart: always
+##    ports:
+##      - "2181:2181"
+##
+##  kafka:
+##    image: wurstmeister/kafka
+##    restart: always
+##    ports:
+##      - "9092:9092"
+##    environment:
+##      HOSTNAME: localhost
+##      KAFKA_ADVERTISED_HOST_NAME: "localhost"
+##      KAFKA_ADVERTISED_PORT: 9092
+##      KAFKA_AUTO_CREATE_TOPICS: "true"
+##      KAFKA_CREATE_TOPICS: "student-saver-topic"
+##      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+###    volumes:
+###      - /var/run/docker.sock:/var/run/docker.sock
+##    depends_on:
+##      - zookeeper
+#
+#  anandindustries:
+#    build: .
+#    hostname: anandindustries
+#    ports:
+#      - 8080:8080
+#    depends_on:
+#      - redis
+##      - kafka
+#
+#  redis:
+#    image: redis:4.0.5-alpine
+#    command: ["redis-server", "--appendonly", "yes"]
+#    hostname: redis
+#    ports:
+#      - 6379:6379
+#
+#

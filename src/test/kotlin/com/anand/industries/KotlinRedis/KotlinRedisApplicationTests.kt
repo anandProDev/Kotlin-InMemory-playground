@@ -26,9 +26,9 @@
 //import org.testcontainers.containers.DockerComposeContainer
 //import java.io.File
 //
-//@ActiveProfiles("test")
+////@ActiveProfiles("test")
 //@RunWith(SpringRunner::class)
-//@SpringBootTest
+////@SpringBootTest
 //class KotlinRedisApplicationTests {
 //
 //    @Autowired
@@ -40,12 +40,12 @@
 //    @Value("\${spring.redis.host}")
 //    private val databaseName: String = ""
 //
-//    @Rule
-//    var compose = KDockerComposeContainer(
-//        listOf(File("src/test/resources/test-compose.yml"))
-//    )
-//        .withExposedService("anandindustries_1", 80)
-//
+////    companion object {
+////        var compose = KDockerComposeContainer(
+////            listOf(File("docker-compose.yaml"))
+////        )
+////            .withExposedService("anandindustries_1", 80)
+////    }
 //
 //    var restTemplate = TestRestTemplate()
 //
@@ -63,22 +63,25 @@
 //    fun setUp() {
 ////        redis.start()
 ////        redis.withExposedPorts(redis.firstMappedPort)
+////        compose.start()
 //
-//    }
-//
-//    @Test
-//    fun givenSimpleWebServerContainer_whenGetReuqest_thenReturnsResponse() {
-//
-//        val address = "http://" + compose.getServiceHost(
-//            "simpleWebServer_1",
-//            80
-//        ) + ":" + compose.getServicePort("anandindustries_1", 80)
-//        val response = address + "/hello/onlydb/anand"
-//
-//        assertEquals(response, "Hello World")
 //    }
 //
 ////    @Test
+////    fun givenSimpleWebServerContainer_whenGetReuqest_thenReturnsResponse() {
+////        assertEquals("", "")
+//////        val address = "http://" + compose.getServiceHost(
+//////            "anandindustries_1",
+//////            80
+//////        ) + ":" + compose.getServicePort("anandindustries_1", 80)
+//////        val finalAddress = address + "/hello/onlydb/anand"
+//////
+//////        val entity = restTemplate.getForEntity(finalAddress, Student::class.java)
+//////
+//////        assertEquals(entity.body, "Hello World")
+////    }
+////
+//    //    @Test
 ////    fun name() {
 ////        val entity = restTemplate.getForEntity("http://localhost:8080/hello/onlydb/anand", Student::class.java)
 ////
@@ -86,8 +89,12 @@
 ////
 ////        assertNotNull(student)
 ////    }
+//    @Test
+//    fun name() {
+//        assertEquals("anand", "anand")
+//    }
 //
-////    @Test
+//    //    @Test
 ////    fun name1() {
 ////
 ////        println(redis.firstMappedPort)
